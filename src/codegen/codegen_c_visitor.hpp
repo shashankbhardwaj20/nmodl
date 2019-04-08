@@ -593,7 +593,8 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \return             The backend code string representing the access to the given variable
      * symbol
      */
-    std::string float_variable_name(SymbolType& symbol, bool use_instance);
+    /// get variable name for float variable
+    virtual std::string float_variable_name(SymbolType& symbol, bool use_instance);
 
 
     /**
