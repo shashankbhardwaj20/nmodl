@@ -1035,7 +1035,8 @@ class CodegenCVisitor: public visitor::AstVisitor {
     /**
      * Print the structure that wraps all range and int variables required for the NMODL
      */
-    void print_mechanism_range_var_structure();
+    virtual void print_mechanism_range_var_structure();
+
 
 
     /**
@@ -1698,7 +1699,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
     /**
      * Print nrn_state / state update function definition
      */
-    void print_nrn_state();
+    virtual void print_nrn_state();
 
 
     /**
