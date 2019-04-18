@@ -716,7 +716,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \param open_brace  Print an opening brace if \c false
      * \param close_brace Print a closing brace if \c true
      */
-    void print_statement_block(ast::StatementBlock* node,
+    virtual void print_statement_block(ast::StatementBlock* node,
                                bool open_brace = true,
                                bool close_brace = true);
 
@@ -1191,7 +1191,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * Print call to internal or external function
      * \param node The AST node representing a function call
      */
-    void print_function_call(ast::FunctionCall* node);
+    virtual void print_function_call(ast::FunctionCall* node);
 
 
     /**
