@@ -1458,7 +1458,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * Print main body of nrn_cur function
      * \param node the AST node representing the NMODL breakpoint block
      */
-    void print_nrn_cur_kernel(ast::BreakpointBlock* node);
+    virtual void print_nrn_cur_kernel(ast::BreakpointBlock* node);
 
 
     /**
@@ -1469,7 +1469,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      *
      * \param node the AST node representing the NMODL breakpoint block
      */
-    void print_nrn_cur_conductance_kernel(ast::BreakpointBlock* node);
+    virtual void print_nrn_cur_conductance_kernel(ast::BreakpointBlock* node);
 
 
     /**
@@ -1705,7 +1705,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
     /**
      * Print nrn_cur / current update function definition
      */
-    void print_nrn_cur();
+    virtual void print_nrn_cur();
 
 
     /**
