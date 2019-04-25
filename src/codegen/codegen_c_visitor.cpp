@@ -2212,7 +2212,6 @@ std::string CodegenCVisitor::get_variable_name(const std::string& name, bool use
     }
 
     if (varname == naming::NTHREAD_DT_VARIABLE) {
-        std::cout << "Calling get_variable_name for " << varname << std::endl;
         return "nt->_" + naming::NTHREAD_DT_VARIABLE;
     }
 

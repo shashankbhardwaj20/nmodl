@@ -504,7 +504,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \param node The AST Statement node to check
      * \return     \c true if this Statement is to be skipped
      */
-    bool statement_to_skip(ast::Statement* node);
+    virtual bool statement_to_skip(ast::Statement* node);
 
 
     /**
@@ -556,7 +556,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \param name The ion variable name
      * \return     The updated name of the variable has been optimized (e.g. \c ena --> \c ion_ena)
      */
-    std::string update_if_ion_variable_name(const std::string& name);
+    virtual std::string update_if_ion_variable_name(const std::string& name);
 
 
     /**
@@ -610,7 +610,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \return             The backend code string representing the access to the given variable
      * symbol
      */
-    std::string int_variable_name(IndexVariableInfo& symbol,
+    virtual std::string int_variable_name(IndexVariableInfo& symbol,
                                   const std::string& name,
                                   bool use_instance);
 
@@ -620,7 +620,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \param symbol The symbol of a variable for which we want to obtain its name
      * \return       The C string representing the access to the global variable
      */
-    std::string global_variable_name(SymbolType& symbol);
+    virtual std::string global_variable_name(SymbolType& symbol);
 
 
     /**
@@ -628,7 +628,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \param symbol The symbol of a variable for which we want to obtain its name
      * \return       The C string representing the access to the shadow variable
      */
-    std::string ion_shadow_variable_name(SymbolType& symbol);
+    virtual std::string ion_shadow_variable_name(SymbolType& symbol);
 
 
     /**
@@ -1001,7 +1001,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
     /**
      * Check if ion variable are copies avoided
      */
-    bool optimize_ion_variable_copies();
+    virtual bool optimize_ion_variable_copies();
 
 
     /**
