@@ -44,6 +44,8 @@
 #include "visitors/units_visitor.hpp"
 #include "visitors/verbatim_var_rename_visitor.hpp"
 #include "visitors/verbatim_visitor.hpp"
+#include "visitors/pow_remove_visitor.hpp"
+#include "visitors/expression_converter_visitor.hpp"
 
 /**
  * \dir
@@ -367,6 +369,11 @@ int main(int argc, const char* argv[]) {
             ast_to_nmodl(ast.get(), filepath("solveblock"));
         }
 
+        {
+            ExpressionConverter().visit_program(ast.get());
+            ast_to_nmodl(ast.get(), filepath("converted.expressions"));
+        }
+
         if (json_perfstat) {
             auto file = scratch_dir + "/" + modfile + ".perf.json";
             logger->info("Writing performance statistics to {}", file);
@@ -390,6 +397,10 @@ int main(int argc, const char* argv[]) {
             }
 
             else if (kkraft_backend) {
+                logger->info("Transforming all instances of Power operation");
+                PowRemoveVisitor().visit_program(ast.get());
+                SymtabVisitor(update_symtab).visit_program(ast.get());
+
                 logger->info("Running Kernkraft backend code generator");
                 CodegenKernkraft visitor(modfile, output_dir, mem_layout, data_type);
                 visitor.visit_program(ast.get());
