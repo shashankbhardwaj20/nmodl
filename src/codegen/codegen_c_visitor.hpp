@@ -639,7 +639,7 @@ class CodegenCVisitor: public visitor::AstVisitor {
      * \return             The C string representing the access to the variable in the neuron thread
      * structure
      */
-    std::string get_variable_name(const std::string& name, bool use_instance = true);
+    virtual std::string get_variable_name(const std::string& name, bool use_instance = true);
 
 
     /**

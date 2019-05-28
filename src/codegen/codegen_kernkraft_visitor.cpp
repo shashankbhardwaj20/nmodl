@@ -584,7 +584,7 @@ void CodegenKernkraft::print_codegen_routines() {
     codegen = true;
     print_mechanism_range_var_structure();
     print_nrn_cur();
-    //print_nrn_state();
+    print_nrn_state();
     codegen = false;
 }
 
