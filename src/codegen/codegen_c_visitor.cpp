@@ -1190,7 +1190,7 @@ bool CodegenCVisitor::channel_task_dependency_enabled() {
 
 
 bool CodegenCVisitor::optimize_ion_variable_copies() {
-    return true;
+    return false;
 }
 
 
