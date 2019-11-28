@@ -5,7 +5,7 @@
  * Lesser General Public License. See top-level LICENSE file for details.
  *************************************************************************/
 
-#include <cmake-build-debug/src/visitors/json_visitor.hpp>
+#include "visitors/json_visitor.hpp"
 #include "visitors/pow_remove_visitor.hpp"
 
 namespace nmodl {
