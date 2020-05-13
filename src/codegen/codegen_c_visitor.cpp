@@ -1962,6 +1962,18 @@ void CodegenCVisitor::print_nmodl_constants() {
     }
 }
 
+void CodegenCVisitor::print_top_local_variables() {
+    if (!info.top_local_variables.empty()) {
+        printer->add_newline(2);
+        printer->add_line("/** top local variables */");
+        for (const auto& it: info.top_local_variables) {
+            std::stringstream ss;
+            ss << "static const double " << it->get_name() << ";";
+            printer->add_line(ss.str());
+        }
+    }
+}
+
 
 void CodegenCVisitor::print_memory_layout_getter() {
     printer->add_newline(2);
@@ -4183,6 +4195,7 @@ void CodegenCVisitor::print_codegen_routines() {
     print_headers_include();
     print_namespace_begin();
     print_nmodl_constants();
+    print_top_local_variables();
     print_mechanism_info();
     print_data_structures();
     print_global_variables_for_hoc();
