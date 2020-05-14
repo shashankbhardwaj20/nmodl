@@ -755,6 +755,7 @@ void CodegenIspcVisitor::print_codegen_routines() {
     print_backend_info();
     print_headers_include();
     print_nmodl_constants();
+    CodegenCVisitor::print_top_local_variables();
 
     print_data_structures();
 
