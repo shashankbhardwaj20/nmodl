@@ -1968,7 +1968,7 @@ void CodegenCVisitor::print_top_local_variables() {
         printer->add_line("/** top local variables */");
         for (const auto& it: info.top_local_variables) {
             std::stringstream ss;
-            ss << "static const double " << it->get_name() << ";";
+            ss << "double " << it->get_name() << ";";
             printer->add_line(ss.str());
         }
     }

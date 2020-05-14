@@ -618,7 +618,6 @@ void CodegenHelperVisitor::visit_program(ast::Program& node) {
         if (block->is_verbatim()) {
             info.top_verbatim_blocks.push_back(block.get());
         }
-        // check for local list statements here
     }
     node.visit_children(*this);
     find_range_variables();

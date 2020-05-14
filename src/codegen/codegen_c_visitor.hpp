@@ -943,6 +943,9 @@ class CodegenCVisitor: public visitor::AstVisitor {
     virtual void print_nmodl_constants();
 
 
+    /**
+     * Print local variables defined in global scope
+     */
     virtual void print_top_local_variables();
 
 
