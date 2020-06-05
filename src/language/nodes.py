@@ -227,7 +227,62 @@ class ChildNode(BaseNode):
 
         return type_name
 
-    def get_add_methods(self):
+    def get_add_methods_declaration(self):
+        s = ''
+        if self.add_method:
+            method = f"""
+                         /**
+                          * \\brief Add member to {self.varname} by raw pointer
+                          */
+                         void emplace_back_{to_snake_case(self.class_name)}({self.class_name} *n);
+
+                         /**
+                          * \\brief Add member to {self.varname} by shared_ptr
+                          */
+                         void emplace_back_{to_snake_case(self.class_name)}(std::shared_ptr<{self.class_name}> n);
+
+                         /**
+                          * \\brief Erase member to {self.varname}
+                          */
+                         {self.class_name}Vector::const_iterator erase_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator first);
+
+                         /**
+                          * \\brief Erase members to {self.varname}
+                          */
+                         {self.class_name}Vector::const_iterator erase_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator first, {self.class_name}Vector::const_iterator last);
+
+                         /**
+                          * \\brief Erase non-consecutive members to {self.varname}
+                          *
+                          * loosely following the cpp reference of remove_if
+                          */
+                         size_t erase_{to_snake_case(self.class_name)}(std::unordered_set<{self.class_name}*>& to_be_erased);
+
+                         /**
+                          * \\brief Insert member to {self.varname}
+                          */
+                         {self.class_name}Vector::const_iterator insert_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, const std::shared_ptr<{self.class_name}>& n);
+
+                         /**
+                          * \\brief Insert members to {self.varname}
+                          */
+                         template <class NodeType, class InputIterator>
+                         void insert_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, NodeType& to, InputIterator first, InputIterator last);
+
+                         /**
+                          * \\brief Reset member to {self.varname}
+                          */
+                         void reset_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, {self.class_name}* n);
+
+                         /**
+                          * \\brief Reset member to {self.varname}
+                          */
+                         void reset_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, std::shared_ptr<{self.class_name}> n);
+                    """
+            s = textwrap.dedent(method)
+        return s
+
+    def get_add_methods_definition(self, parent):
         s = ''
         if self.add_method:
             set_parent = "n->set_parent(this); "
@@ -238,46 +293,31 @@ class ChildNode(BaseNode):
                         }}
                         """
             method = f"""
-                         /**
-                          * \\brief Add member to {self.varname} by raw pointer
-                          */
-                         void emplace_back_{to_snake_case(self.class_name)}({self.class_name} *n) {{
+                         void {parent.class_name}::emplace_back_{to_snake_case(self.class_name)}({self.class_name} *n) {{
                             {self.varname}.emplace_back(n);
 
                              // set parents
                              {set_parent}
                          }}
 
-                         /**
-                          * \\brief Add member to {self.varname} by shared_ptr
-                          */
-                         void emplace_back_{to_snake_case(self.class_name)}(std::shared_ptr<{self.class_name}> n) {{
+                         void {parent.class_name}::emplace_back_{to_snake_case(self.class_name)}(std::shared_ptr<{self.class_name}> n) {{
                             {self.varname}.emplace_back(n);
                              // set parents
                              {set_parent}
                          }}
 
-                         /**
-                          * \\brief Erase member to {self.varname}
-                          */
-                         {self.class_name}Vector::const_iterator erase_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator first) {{
+                         {self.class_name}Vector::const_iterator {parent.class_name}::erase_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator first) {{
                             auto first_it = const_iter_cast({self.varname}, first);
                             return {self.varname}.erase(first_it);
                          }}
-                         /**
-                          * \\brief Erase members to {self.varname}
-                          */
-                         {self.class_name}Vector::const_iterator erase_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator first, {self.class_name}Vector::const_iterator last) {{
+
+                         {self.class_name}Vector::const_iterator {parent.class_name}::erase_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator first, {self.class_name}Vector::const_iterator last) {{
                             auto first_it = const_iter_cast({self.varname}, first);
                             auto last_it = const_iter_cast({self.varname}, last);
                             return {self.varname}.erase(first_it, last_it);
                          }}
-                         /**
-                          * \\brief Erase non-consecutive members to {self.varname}
-                          * 
-                          * loosely following the cpp reference of remove_if
-                          */
-                         size_t erase_{to_snake_case(self.class_name)}(std::unordered_set<{self.class_name}*>& to_be_erased) {{
+
+                         size_t {parent.class_name}::erase_{to_snake_case(self.class_name)}(std::unordered_set<{self.class_name}*>& to_be_erased) {{
                             auto first = {self.varname}.begin();
                             auto last = {self.varname}.end();
                             auto result = first;
@@ -297,21 +337,15 @@ class ChildNode(BaseNode):
                             
                             return out;
                          }}
-                        
 
-                         /**
-                          * \\brief Insert member to {self.varname}
-                          */
-                         {self.class_name}Vector::const_iterator insert_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, const std::shared_ptr<{self.class_name}>& n) {{
+                         {self.class_name}Vector::const_iterator {parent.class_name}::insert_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, const std::shared_ptr<{self.class_name}>& n) {{
                              {set_parent}
                             auto pos_it = const_iter_cast({self.varname}, position);
                             return {self.varname}.insert(pos_it, n);
                          }}
-                         /**
-                          * \\brief Insert members to {self.varname}
-                          */
+
                          template <class NodeType, class InputIterator>
-                         void insert_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, NodeType& to, InputIterator first, InputIterator last) {{
+                         void {parent.class_name}::insert_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, NodeType& to, InputIterator first, InputIterator last) {{
 
                              for (auto it = first; it != last; ++it) {{
                                  auto& n = *it;
@@ -324,20 +358,14 @@ class ChildNode(BaseNode):
                              {self.varname}.insert(pos_it, first_it, last_it);
                          }}
 
-                         /**
-                          * \\brief Reset member to {self.varname}
-                          */
-                         void reset_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, {self.class_name}* n) {{
+                         void {parent.class_name}::reset_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, {self.class_name}* n) {{
                              //set parents
                              {set_parent}
 
                             {self.varname}[position - {self.varname}.begin()].reset(n);
                          }}
 
-                         /**
-                          * \\brief Reset member to {self.varname}
-                          */
-                         void reset_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, std::shared_ptr<{self.class_name}> n) {{
+                         void {parent.class_name}::reset_{to_snake_case(self.class_name)}({self.class_name}Vector::const_iterator position, std::shared_ptr<{self.class_name}> n) {{
                              //set parents
                              {set_parent}
 
