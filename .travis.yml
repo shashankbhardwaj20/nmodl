@@ -146,5 +146,5 @@ deploy:
   local_dir: $TRAVIS_BUILD_DIR/_skbuild/linux-x86_64-3.8/setuptools/sphinx/
   target_branch: gh-pages
   on:
-    branch: master
+    branch: test_docs
     condition: $TRAVIS_OS_NAME = linux

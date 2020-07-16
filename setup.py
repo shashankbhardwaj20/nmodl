@@ -25,7 +25,6 @@ try:
 except Exception as e:
     raise RuntimeError("Could not get version from Git repo") from e
 
-
 class lazy_dict(dict):
     """When the value associated to a key is a function, then returns
     the function call instead of the function.
