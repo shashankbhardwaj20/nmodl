@@ -218,7 +218,12 @@ void init_visitor_module(py::module& m) {
         .def("clear", &AstLookupVisitor::clear)
         .def("lookup", static_cast<const std::vector<std::shared_ptr<ast::Ast>>& (AstLookupVisitor::*)(ast::Ast&)>(&AstLookupVisitor::lookup))
         .def("lookup", static_cast<const std::vector<std::shared_ptr<ast::Ast>>& (AstLookupVisitor::*)(ast::Ast&, ast::AstNodeType)>(&AstLookupVisitor::lookup))
-        .def("lookup", static_cast<const std::vector<std::shared_ptr<ast::Ast>>& (AstLookupVisitor::*)(ast::Ast&, const std::vector<ast::AstNodeType>&)>(&AstLookupVisitor::lookup));
+        .def("lookup", static_cast<const std::vector<std::shared_ptr<ast::Ast>>& (AstLookupVisitor::*)(ast::Ast&, const std::vector<ast::AstNodeType>&)>(&AstLookupVisitor::lookup))
+
+    {% for node in nodes %}
+    .def("visit_{{ node.class_name | snake_case }}", &AstLookupVisitor::visit_{{ node.class_name | snake_case }})
+    {% if loop.last -%};{% endif %}
+    {% endfor %}
 
     py::class_<ConstantFolderVisitor, AstVisitor> constant_folder_visitor(m_visitor, "ConstantFolderVisitor", docstring::constant_folder_visitor_class);
     constant_folder_visitor.def(py::init<>())

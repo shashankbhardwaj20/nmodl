@@ -76,7 +76,7 @@ class MetaAstLookupVisitor: public DefaultVisitor {
         nodes.clear();
     }
 
-  protected:
+
     // clang-format off
     {% for node in nodes %}
     void visit_{{ node.class_name|snake_case }}(typename visit_arg_trait<ast::{{ node.class_name }}>::type& node) override;

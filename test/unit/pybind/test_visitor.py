@@ -29,6 +29,18 @@ def test_lookup_visitor_any_node():
     assert len(eqs) == 0
 
 
+def test_my_custom_lookup_visitor():
+    class MyAstLookupVisitor(visitor.AstLookupVisitor):
+        def visit_integer(self, node):
+            raise RuntimeError("please fail")
+    int42 = ast.Integer(42, None)
+    lookup_visitor = MyAstLookupVisitor(ast.AstNodeType.INTEGER)
+    int42.accept(lookup_visitor)
+
+    lookup_visitor.visit_integer(int42)
+    assert len(lookup_visitor.get_nodes()) == 0
+
+
 def test_lookup_visitor_constructor(ch_ast):
     lookup_visitor = visitor.AstLookupVisitor(ast.AstNodeType.DIFF_EQ_EXPRESSION)
     eqs = lookup_visitor.lookup(ch_ast)
