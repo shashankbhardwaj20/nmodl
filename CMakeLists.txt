@@ -29,7 +29,6 @@ endif()
 # Settings to enable project as submodule
 # =============================================================================
 set(NMODL_PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(NMODL_PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(NMODL_AS_SUBPROJECT OFF)
 if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   set(NMODL_AS_SUBPROJECT ON)
@@ -216,10 +215,10 @@ else()
   set(LegacyY "/")
   set(LegacyN "")
 endif()
-configure_file(share/nrnunits.lib.in ${CMAKE_CURRENT_BINARY_DIR}/share/nrnunits.lib @ONLY)
+configure_file(share/nrnunits.lib.in ${CMAKE_CURRENT_BINARY_DIR}/share/nmodl/nrnunits.lib @ONLY)
 
 # =============================================================================
 # Install unit database to share
 # =============================================================================
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/nrnunits.lib
-        DESTINATION ${NMODL_INSTALL_DIR_SUFFIX}share)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/nmodl/nrnunits.lib
+        DESTINATION ${NMODL_INSTALL_DIR_SUFFIX}share/nmodl)
