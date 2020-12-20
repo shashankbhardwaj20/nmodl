@@ -66,25 +66,6 @@ include(FlexHelper)
 include(GitRevision)
 include(PythonLinkHelper)
 include(RpathHelper)
-include(ExternalProjectHelper)
-
-# =============================================================================
-# Initialize external libraries as submodule
-# =============================================================================
-set(THIRD_PARTY_DIRECTORY "${PROJECT_SOURCE_DIR}/ext")
-add_external_project(fmt OFF)
-add_external_project(spdlog OFF)
-add_external_project(pybind11)
-add_external_project(cli11 OFF)
-add_external_project(eigen OFF)
-
-add_subdirectory(${THIRD_PARTY_DIRECTORY}/fmt EXCLUDE_FROM_ALL)
-set_property(TARGET fmt PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-include_directories(
-  SYSTEM ${THIRD_PARTY_DIRECTORY} ${THIRD_PARTY_DIRECTORY}/catch/include
-  ${THIRD_PARTY_DIRECTORY}/fmt/include ${THIRD_PARTY_DIRECTORY}/spdlog/include
-  ${THIRD_PARTY_DIRECTORY}/cli11/include)
 
 # =============================================================================
 # HPC Coding Conventions
@@ -100,10 +81,31 @@ set(NMODL_ClangFormat_DEPENDENCIES
     CACHE STRING "list of CMake targets to build before formatting C++ code" FORCE)
 
 # initialize submodule of coding conventions under cmake
-set(THIRD_PARTY_DIRECTORY "${PROJECT_SOURCE_DIR}/cmake")
-add_external_project(hpc-coding-conventions OFF)
+if(NOT EXISTS cmake/hpc-coding-conventions)
+  execute_process(COMMAND git submodule update --init --recursive -- cmake/hpc-coding-conventions)
+endif()
 add_subdirectory(cmake/hpc-coding-conventions/cpp)
 include(FindClangFormat)
+
+# =============================================================================
+# Initialize external libraries as git submodules
+# =============================================================================
+bbp_git_submodule(cli11)
+bbp_git_submodule(eigen)
+bbp_git_submodule(fmt BUILD EXCLUDE_FROM_ALL)
+bbp_git_submodule(pybind11 BUILD)
+bbp_git_submodule(spdlog)
+
+set_property(TARGET fmt PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+include_directories(
+        SYSTEM
+        ${NMODL_3RDPARTY_DIR}
+        ${NMODL_3RDPARTY_DIR}/catch/include
+        ${NMODL_3RDPARTY_DIR}/fmt/include
+        ${NMODL_3RDPARTY_DIR}/spdlog/include
+        ${NMODL_3RDPARTY_DIR}/cli11/include
+)
 
 # =============================================================================
 # Format & execute ipynb notebooks in place (pip install nbconvert clean-ipynb)

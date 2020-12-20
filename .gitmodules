@@ -1,18 +1,18 @@
 [submodule "ext/pybind11"]
-	path = ext/pybind11
+	path = 3rdparty/pybind11
 	url = https://github.com/pybind/pybind11.git
 [submodule "cmake/hpc-coding-conventions"]
 	path = cmake/hpc-coding-conventions
 	url = https://github.com/BlueBrain/hpc-coding-conventions.git
 [submodule "ext/cli11"]
-	path = ext/cli11
+	path = 3rdparty/cli11
 	url = https://github.com/CLIUtils/CLI11.git
 [submodule "ext/eigen"]
-	path = ext/eigen
+	path = 3rdparty/eigen
 	url = https://github.com/eigenteam/eigen-git-mirror.git
 [submodule "ext/spdlog"]
-	path = ext/spdlog
+	path = 3rdparty/spdlog
 	url = https://github.com/BlueBrain/spdlog.git
 [submodule "ext/fmt"]
-	path = ext/fmt
+	path = 3rdparty/fmt
 	url = https://github.com/fmtlib/fmt.git
