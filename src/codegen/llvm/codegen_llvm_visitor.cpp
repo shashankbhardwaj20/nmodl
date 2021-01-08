@@ -186,12 +186,7 @@ void CodegenLLVMVisitor::visit_procedure_or_function(const ast::Block& node) {
     }
 
     // Process function or procedure body.
-    const auto& statements = block->get_statements();
-    for (const auto& statement: statements) {
-        // \todo: Support other statement types.
-        if (statement->is_local_list_statement() || statement->is_expression_statement())
-            statement->accept(*this);
-    }
+    block->accept(*this);
 
     // Add the terminator. If visiting function, we need to return the value specified by
     // ret_<function_name>.
@@ -266,6 +261,39 @@ void CodegenLLVMVisitor::visit_boolean(const ast::Boolean& node) {
     const auto& constant = llvm::ConstantInt::get(llvm::Type::getInt1Ty(*context),
                                                   node.get_value());
     values.push_back(constant);
+}
+
+void CodegenLLVMVisitor::visit_codegen_for_statement(const ast::CodegenForStatement& node) {
+    // First, initialise the loop in the same basic block.
+    node.get_initialization()->accept(*this);
+
+    // Branch to condition basic block and insert condition code there.
+    llvm::BasicBlock* for_cond = llvm::BasicBlock::Create(*context, /*Name=*/"for.cond");
+    builder.CreateBr(for_cond);
+    builder.SetInsertPoint(for_cond);
+    node.get_condition()->accept(*this);
+
+    // Extract the condition to decide whether to branch to the loop body or loop exit.
+    llvm::Value* cond = values.back();
+    values.pop_back();
+    llvm::BasicBlock* for_body = llvm::BasicBlock::Create(*context, /*Name=*/"for.body");
+    llvm::BasicBlock* for_inc = llvm::BasicBlock::Create(*context, /*Name=*/"for.inc");
+    llvm::BasicBlock* exit = llvm::BasicBlock::Create(*context, /*Name=*/"for.exit");
+    builder.CreateCondBr(cond, for_body, exit);
+
+    // Generate code for the loop body and create the basic block for the increment.
+    builder.SetInsertPoint(for_body);
+    const auto& statement_block = node.get_statement_block();
+    statement_block->accept(*this);
+    builder.CreateBr(for_inc);
+
+    // Process increment.
+    builder.SetInsertPoint(for_inc);
+    node.get_increment()->accept(*this);
+    builder.CreateBr(for_cond);
+
+    // Generate exit code out of the loop.
+    builder.SetInsertPoint(exit);
 }
 
 void CodegenLLVMVisitor::visit_double(const ast::Double& node) {
@@ -359,6 +387,15 @@ void CodegenLLVMVisitor::visit_program(const ast::Program& node) {
 
 void CodegenLLVMVisitor::visit_procedure_block(const ast::ProcedureBlock& node) {
     visit_procedure_or_function(node);
+}
+
+void CodegenLLVMVisitor::visit_statement_block(const ast::StatementBlock& node) {
+    const auto& statements = node.get_statements();
+    for (const auto& statement: statements) {
+        // \todo: Support other statement types.
+        if (statement->is_local_list_statement() || statement->is_expression_statement())
+            statement->accept(*this);
+    }
 }
 
 void CodegenLLVMVisitor::visit_unary_expression(const ast::UnaryExpression& node) {
