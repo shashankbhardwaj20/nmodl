@@ -263,6 +263,38 @@ void CodegenLLVMVisitor::visit_boolean(const ast::Boolean& node) {
     values.push_back(constant);
 }
 
+// Generating FOR loop in LLVM IR creates the following structure:
+//
+//  +---------------------------+
+//  | <code before for loop>    |
+//  | <for loop initialisation> |
+//  | br %cond                  |
+//  +---------------------------+
+//                |
+//                V
+//  +-----------------------------+
+//  | <condition code>            |
+//  | %cond = ...                 |<------+
+//  | cond_br %cond, %body, %exit |       |
+//  +-----------------------------+       |
+//      |                 |               |
+//      |                 V               |
+//      |     +------------------------+  |
+//      |     | <body code>            |  |
+//      |     | br %inc                |  |
+//      |     +------------------------+  |
+//      |                 |               |
+//      |                 V               |
+//      |     +------------------------+  |
+//      |     | <increment code>       |  |
+//      |      | br %cond              |  |
+//      |     +------------------------+  |
+//      |                 |               |
+//      |                 +---------------+
+//      V
+//  +---------------------------+
+//  | <code after for loop>     |
+//  +---------------------------+
 void CodegenLLVMVisitor::visit_codegen_for_statement(const ast::CodegenForStatement& node) {
     // First, initialise the loop in the same basic block.
     node.get_initialization()->accept(*this);
