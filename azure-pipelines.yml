@@ -72,7 +72,7 @@ jobs:
   - script: |
       export PATH=$(pwd)/$CMAKE_PKG/bin:/home/vsts/.local/bin:$PATH
       export CXX='g++-8'
-      git clone --recursive https://github.com/BlueBrain/CoreNeuron.git
+      git clone --recursive https://github.com/BlueBrain/CoreNeuron.git -b prmaodk/mod2c-update
       mkdir CoreNeuron/build
       cd CoreNeuron/build
       cmake --version
@@ -90,7 +90,7 @@ jobs:
   - script: |
       export PATH=$(pwd)/$CMAKE_PKG/bin:/home/vsts/.local/bin:$PATH
       export CXX='g++-8'
-      git clone --recursive https://github.com/BlueBrain/CoreNeuron.git
+      git clone --recursive https://github.com/BlueBrain/CoreNeuron.git -b prmaodk/mod2c-update
       mkdir CoreNeuron/build_ispc
       cd CoreNeuron/build_ispc
       cmake --version
